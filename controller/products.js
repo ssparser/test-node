@@ -1,8 +1,7 @@
 const products = require('../model/productModel');
-const sequelize = require('../util/database');
 
 exports.getProducts = (req, res, next) => {
-    products.fetchAll()
+    product.fetchAll()
     .then(([rows, fields]) =>
        { res.status(200).json(rows)})
     .catch(err =>{
@@ -12,16 +11,17 @@ exports.getProducts = (req, res, next) => {
 
 exports.postProducts = (req, res, next) => {
     const {title, price} = req.body;
-
-    const product = new products(title, price);
-    product.save()
-    .then(([row, fields]) => {
-        res.status(201).json({ message: 'Product added successfully', productId: row.insertId });
+    products.create({
+        title : title,
+        price : price
     })
-    .catch(err =>{
-        res.status(404);
+    .then(result => {
+        res.status(200).json(result);
+    })
+    .catch(err => {
         console.log(err);
     });
+    
 };
 
 exports.deleteProducts = (req, res, next) => {
